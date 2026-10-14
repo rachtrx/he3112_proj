@@ -1,0 +1,14 @@
+numpy
+pandas
+matplotlib
+seaborn
+openpyxl
+nbformat
+nbconvert
+jupyterlab
+ipykernel
+beautifulsoup4
+lxml
+requests
+yfinance
+edgartools

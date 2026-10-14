@@ -1,0 +1,48 @@
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+
+# edgartools local cache
+.edgar/
+edgar_cache/
+
+# Excel / Office lock & temp files (created while a file is open)
+~$*
+*.tmp
+
+# Generated data (uncomment if teammates should regenerate it via the scripts instead)
+# data/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Data files
+data/

@@ -71,18 +71,29 @@ def no_change_counterfactual(numbers):
 
 
 def depreciation_weights(method, life):
-    """Zero residual, half-year convention. All schedules allocate exactly 100%."""
-    if method == 'Straight-line': weights = np.repeat(1/life, life)
-    elif method == 'Sum-of-years-digits': weights = np.arange(life, 0, -1) / (life*(life+1)/2)
-    elif method == 'Double-declining':
-        book, charges = 1., []
-        for age in range(life):
-            charge = min(book, max(2/life*book, book/(life-age)))
+    """Zero-residual schedules under a half-year convention; weights sum to 1.
+
+    Straight-line and SYD full-year charges are split across adjacent calendar
+    years. DDB is calculated directly over half-year/full-year/half-year periods,
+    comparing declining-balance depreciation with straight-line over remaining
+    useful life at each period (the conventional switch-to-straight-line rule).
+    """
+    if method == 'Double-declining':
+        durations = np.r_[.5, np.ones(life-1), .5]
+        book, remaining_life, charges = 1., float(life), []
+        for duration in durations:
+            ddb = book * (2/life) * duration
+            straight_line = book * duration / remaining_life
+            charge = min(book, max(ddb, straight_line))
             charges.append(charge)
             book -= charge
-        weights = np.array(charges)
-    else: raise ValueError(method)
-    half_year = np.convolve(weights, [.5, .5])
+            remaining_life -= duration
+        half_year = np.array(charges)
+    else:
+        if method == 'Straight-line': weights = np.repeat(1/life, life)
+        elif method == 'Sum-of-years-digits': weights = np.arange(life, 0, -1) / (life*(life+1)/2)
+        else: raise ValueError(method)
+        half_year = np.convolve(weights, [.5, .5])
     assert np.isclose(half_year.sum(), 1) and (half_year >= 0).all()
     return half_year
 
